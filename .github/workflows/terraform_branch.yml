@@ -38,12 +38,12 @@ jobs:
               echo "Bucket already exists, skipping creation."
             else
               echo "Bucket does not exist, creating it."
-              aws s3 mb s3://"sock-bucket"
+              aws s3 mb s3://"jovals_Bucket_capstone_93"
             fi
       
       - name: Create DynamoDB table
         run: |
-          if aws dynamodb describe-table --table-name "terraform-lock" >/dev/null 2>&1; then
+          if aws dynamodb describe-table --table-name "terraform-lockfile-for-capstone_93" >/dev/null 2>&1; then
             echo "DynamoDB table already exists, skipping creation."
           else
             aws dynamodb create-table \
