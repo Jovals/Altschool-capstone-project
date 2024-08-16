@@ -20,10 +20,6 @@ variable "cluster_name" {
   type = string
 }
 
-# variable "instance_type" {
-#   description = "instance type"
-#   type = list(string)
-# }
 variable "ami_type" {
   description = "ami type"
   type = string
