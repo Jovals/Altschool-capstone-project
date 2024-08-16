@@ -40,7 +40,8 @@ jobs:
 
       - name: Update kubeconfig 
         run: |
-          aws eks update-kubeconfig --region us-east-1 --name sockShop
+          kubectl create namespace sock-shop
+          aws eks update-kubeconfig --region us-east-1 --name sock-shop
           kubectl config set-context --current --namespace=sock-shop
           kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.1/cert-manager.yaml
 
@@ -71,5 +72,6 @@ jobs:
         run: |
 
           cd Encrypt
+          kubectl create namespace cert-manager
           kubectl apply -f lets-encrypt-cluster-issuer.yml
           kubectl apply -f certificate-manager.yml

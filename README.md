@@ -9,7 +9,7 @@ This project was implemented with Terraform for the provision of infrastructure,
 - AWS account
 - Kubernetes
 - Prometheus and grafana for monitoring
-- Let's Encrypt
+- Let's Encrypt: For
 - Helm
 
 ## Prerequisites 
@@ -25,6 +25,7 @@ This project was implemented with Terraform for the provision of infrastructure,
 First of all, To do that, make sure you have terraform installed and have installed the AWS CLI and configured it.
 
 Then, we have to provision our infrastruture on AWS which consist of a VPC, Security group, and an EKS cluster by first writing the terraform code. 
+
 Then run the command 
 `terraform init`
 After than you check the plan of your infrastructure by running the command: 
@@ -60,7 +61,44 @@ So we create the ingress file and apply with the command:
 ideally, if we run the load balancer IP on the browser, it wont serve the application. But we can resolve that by either connecting it to a domain name or DNS mapping. For this project it was connected to a domain name with an A record. 
 (pic of the frontend page)
 
-Next is to encrypt our application with Lets encrypt so it can render with https. 
+## Monitoring
+
+Prometheus will be used to monitor the performance and health of the Socks Shop application. This will include metrics such as request latency, error rate, and request volume. The Prometheus server will be configured to scrape metrics from the Socks Shop application and store them in a time-series database. Grafana will be used to visualize the metrics and create dashboards to monitor the performance and health of the application.
+
+Now i have the deploy, config and svc yaml files for prometheus, grafana, alert manager, and kube state and they all can be rendered with port forwarding but i discovered it's easier to use helm to install all those packages with helm and it comes with more metrics for the monitoring. 
+
+Helm is a package manager for Kubernetes that provides an easy way to find, share, and use software built for Kubernetes.
+
+First step is to install helm and update with the commands:
+
+`helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx`
+ `helm repo update`
+
+Next step is to add the prometheus github repo with the command:
+`helm repo add prometheus https://prometheus-community.github.io/helm-charts`
+
+Now this repo comes with a lot of charts and we search for the right one with all the packages we need with the command  `helm search repo prometheus` 
+(picture of charts)
+
+After the particular chart is identified we install it with the command: 
+`helm install prometheus prometheus/kube-prometheus-stack -n sock-shop`
+(pic of prometheus stack install, pods and service)
+
+Then we update our ingress.yml file to be able to host the prometheus, grafana and alert manager packages and we apply the ingress file using the details of their services. Then create a CNAME record for each of the services to connect to our load balancer for it to render on our browser. 
+
+## Security
+The application will be secured with HTTPS using a Let's Encrypt certificate. Let's Encrypt is a free, automated, and open certificate authority that provides free SSL/TLS certificates for websites. The certificate will be used to secure the communication between the client and the Socks-Shop application, ensuring that the data is encrypted and secure.
+
+First we create a namespace called cert-manager with the command:
+`kubectl create namespace cert-manager`
+
+Next step is to apply a YAML file that contains the necessary Kubernetes manifests in github (like Deployments, Services, and CRDs) to install cert-manager in your cluster.
+`kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.2/cert-manager.yaml`
+
+Next is for us to create and apply our Cluster issuer and certificate YAML files. Then we update our ingress file with the tls record and annontations. And we apply the ingress file. 
+
+
+
 
 
 
@@ -118,10 +156,7 @@ Then we updata our ingress file to be able to access prometheus and grafana and 
 
 The error page because of the wrong port (input pic)
 
-first install helm repo with the command
-`helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx`
-and updaate with the command `helm repo update`
-(add pic of helm repo add)
+
 
 
 alertmanager-prometheus-kube-kube-prome-alertmanager-0
