@@ -18,6 +18,7 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    env: 
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -66,7 +67,17 @@ jobs:
       - name: Create EKS cluster
         run: |
           terraform -chdir=Terraform_main/ init
-          terraform -chdir=Terraform_main/ apply --auto-approve
+          terraform -chdir=Terraform_main/ apply \
+          -var="aws_region=${{ env.AWS_REGION }}" \
+          -var="azs=${{ env.AZS }}" \
+          -var="cluster_name=${{ env.CLUSTER_NAME }}" \
+          -var="instance_type=${{ env.INSTANCE_TYPE }}" \
+          -var="ami_type=${{ env.AMI_TYPE }}" \
+          -var="kubernetes_version=${{ env.KUBERNETES_VERSION }}" \
+          -var="vpc_cidr=${{ env.VPC_CIDR }}" \
+          -var="private_subnets=${{ env.PRIVATE_SUBNETS }}" \
+          -var="public_subnets=${{ env.PUBLIC_SUBNETS }}" \
+          --auto-approve
 
 
 

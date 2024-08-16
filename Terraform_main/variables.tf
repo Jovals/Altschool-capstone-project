@@ -24,10 +24,10 @@ variable "cluster_name" {
 #   description = "instance type"
 #   type = list(string)
 # }
-# variable "ami_type" {
-#   description = "ami type"
-#   type = string
-# }
+variable "ami_type" {
+  description = "ami type"
+  type = string
+}
 variable "private_subnets" {
   description = "private subnets"
   type = list(string)
