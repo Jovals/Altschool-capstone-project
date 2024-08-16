@@ -41,6 +41,7 @@ jobs:
               aws s3 mb s3://"jovals-bucket-capstone-93"
             fi
 
+
       - name: Install kubectl
         uses: azure/setup-kubectl@v3
 
