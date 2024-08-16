@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: jovals-certificate
+  namespace: sock-shop
+spec:
+  secretName: jovals-secret
+  issuerRef: 
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: www.jovals.me
+  dnsNames:
+  - www.jovals.me 
+

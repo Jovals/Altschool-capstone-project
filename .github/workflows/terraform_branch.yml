@@ -1,13 +1,13 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: "terraform_branch"
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "terraform_branch" ]
- 
+
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -24,12 +24,52 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.REGION }}
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+
+      - name: Create s3 bucket
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+           if aws s3api head-bucket --bucket "sock-bucket" >/dev/null 2>&1; then
+              echo "Bucket already exists, skipping creation."
+            else
+              echo "Bucket does not exist, creating it."
+              aws s3 mb s3://"sock-bucket"
+            fi
+      
+      - name: Create DynamoDB table
+        run: |
+          if aws dynamodb describe-table --table-name "terraform-lock" >/dev/null 2>&1; then
+            echo "DynamoDB table already exists, skipping creation."
+          else
+            aws dynamodb create-table \
+              --table-name "terraform-lock" \
+              --attribute-definitions AttributeName=LockID,AttributeType=S \
+              --key-schema AttributeName=LockID,KeyType=HASH \
+              --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
+          fi
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Install helm
+        uses: azure/setup-helm@v4.2.0
+
+
+      - name: setup terraform
+        uses: hashicorp/setup-terraform@v2
+        
+      - name: Create EKS cluster
+        run: |
+          terraform -chdir=Terraform_main/ init
+          terraform -chdir=Terraform_main/ apply --auto-approve
+
+
+
+      - name: Update kubeconfig 
+        run: |
+          aws eks update-kubeconfig --region us-east-1 --name sockShop
