@@ -55,17 +55,23 @@ jobs:
       - name: Update helm charts
         run: helm repo update 
 
+      - name: Run manifest files
+        run: |
+
+          cd k8s-Manifest
+          kubectl apply -f deployment.yml
+  
+
       - name: install helm charts
         run: |
           
           helm upgrade --install prometheus prometheus/kube-prometheus-stack
           helm upgrade --install ingress ingress/ingress-nginx
 
-      - name: Run manifest files
+      - name: Apply ingress files
         run: |
 
           cd k8s-Manifest
-          kubectl apply -f deployment.yml
           kubectl apply -f ingress.yml
 
       - name: Run Enccryption
