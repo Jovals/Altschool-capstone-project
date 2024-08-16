@@ -5,6 +5,7 @@ variable "kubernetes_version" {
 
 variable "vpc_cidr" {
   description = "default CIDR range of the VPC"
+  type = string
 }
 variable "aws_region" {
   description = "aws region"
