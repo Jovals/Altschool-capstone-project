@@ -68,14 +68,14 @@ jobs:
           terraform -chdir=Terraform_main/ init
           terraform -chdir=Terraform_main/ apply \
           -var="aws_region=us-east-1" \
-          -var="azs=us-east-1a,us-east-1b" \
+          -var='azs=["us-east-1a","us-east-1b"]' \
           -var="cluster_name=sock-shop" \
-          -var="instance_type=t2.medium,t3.medium" \
+          -var='instance_type=["t2.medium","t3.medium"]' \
           -var="ami_type=AL2_x86_64" \
           -var="kubernetes_version=1.27" \
           -var="vpc_cidr=10.0.0.0/16" \
-          -var="private_subnets=10.0.1.0/24,10.0.2.0/24" \
-          -var="public_subnets=10.0.3.0/24,10.0.4.0/24" \
+          -var='private_subnets=["10.0.1.0/24","10.0.2.0/24"]' \
+          -var='public_subnets=["10.0.3.0/24","10.0.4.0/24"]' \
           --auto-approve
 
 
