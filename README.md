@@ -49,31 +49,33 @@ After you are sure the infrastructre to be created is what you want, you provisi
 `terraform apply --auto-approve`
 
 The '--auto-approve' flag is so you won't get any prompt while the infrastructure is being provisioned. 
-(picture of the EKS clauser creation/vpc ) [!]
+![infrastructure provision sucess](/Altschool-capstone-project/capston_main/VPC-EKS-Creation-current.PNG)
 
 The next step is to make sure your kubectl connected to the EKS Cluster you just provisioned and this is by updating the kube-config file. To do that, run the command:
 `aws eks update-kubeconfig --region us-east-1 --name sock-shop`
-(pic of the command)
+![kubeconfig update](/Altschool-capstone-project/capston_main/kube-config-file-update-success-current.PNG)
 
 So now you can push the kubernetes manifest into the EKS cluster we created which is in the deployment.yml file. In this repository, it is located in the main branch. Run the command:
 
 `kubectl apply -f deployment.yml`
-(pic of the creation of manifest)
+![](/Altschool-capstone-project/capston_main/)
 
 We can check our pods and svc to be sure they are running with the commands:
 `kubectl get pods -n sock-shop`
 `kubectl get svc -n soc-shop`
-(pic of pods and services)
+![pods and services](/Altschool-capstone-project/capston_main/Get-pods-command-success.PNG)
+![pods and services](/Altschool-capstone-project/capston_main/Get-SVC-command.PNG)
 
 Now that we have our pods and services running on our cluster. We see that our services are pods are not accessible to the users because they all have cluster IPs. So be able to connect to the deployed app in the cluster. To do that, we have to install the ingress controller which creates a load balancer. We do this because it is not easy to create a load balancer on kubernetes. The users connect to the load balancer and it routes traffic to the application/cluster. To do this, we run the command: 
 `kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/aws/deploy.yaml`
-(pic of ingress controller installation)
-(pic of load balancer in the UI)
+![ingress controller install](/Altschool-capstone-project/capston_main/Ingress-Controller-Creation.PNG)
+![load balancer in UI](/Altschool-capstone-project/capston_main/Load-balancer.PNG)
 
 Next is for us to create and apply our ingress file. The ingress file gives us a more simple and flexible way to connect to our cluster. It allows for a single point entry to our cluster as opposed to exposing multiple services seperately. Ingress also allows us to use one load balancer. Without it, each service we want to expose will require it's own load balancer. 
 
 So we create the ingress file and apply with the command:
 `kubectl apply -f ingress.yml -n sock-shop`
+
 
 ideally, if we run the load balancer IP on the browser, it wont serve the application. But we can resolve that by either connecting it to a domain name or DNS mapping. For this project it was connected to a domain name with an A record. 
 (pic of the frontend page)
