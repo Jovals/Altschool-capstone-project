@@ -49,7 +49,7 @@ After you are sure the infrastructre to be created is what you want, you provisi
 `terraform apply --auto-approve`
 
 The '--auto-approve' flag is so you won't get any prompt while the infrastructure is being provisioned. 
-![infrastructure provision sucess](/Altschool-capstone-project/images/VPC-EKS-Creation-current.PNG)
+![infrastructure provision sucess](/images/VPC-EKS-Creation-current.PNG)
 
 The next step is to make sure your kubectl connected to the EKS Cluster you just provisioned and this is by updating the kube-config file. To do that, run the command:
 `aws eks update-kubeconfig --region us-east-1 --name sock-shop`
