@@ -73,6 +73,6 @@ jobs:
         run: |
 
           cd Encrypt
-          kubectl create namespace cert-manager
+          # kubectl create namespace cert-manager
           kubectl apply -f lets-encrypt-cluster-issuer.yml
           kubectl apply -f certificate-manager.yml
