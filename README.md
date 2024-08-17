@@ -1,4 +1,5 @@
 # Altschool-capstone-project
+<img src="/images/Architecture (1).png" alt="Banner Description" width="100%" />
 
 ### Deployment of Sock Shop Microservices Application on Kubernetes
 
