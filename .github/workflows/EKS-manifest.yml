@@ -60,6 +60,7 @@ jobs:
 
           cd k8s-Manifest
           kubectl apply -f deployment.yml
+          kubectl apply -f ingress.yml
   
 
       - name: install helm charts
@@ -67,14 +68,8 @@ jobs:
           
           helm upgrade --install prometheus prometheus/kube-prometheus-stack
           helm upgrade --install ingress ingress/ingress-nginx
-
-      - name: Apply ingress files
-        run: |
-
-          cd k8s-Manifest
-          kubectl apply -f ingress.yml
-
-      - name: Run Enccryption
+          
+      - name: Run Encryption
         run: |
 
           cd Encrypt
